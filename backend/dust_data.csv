@@ -1,0 +1,7 @@
+pm25,co2,battery,dust_risk
+35,400,90,Low
+80,600,85,Medium
+120,900,70,High
+200,1200,60,High
+50,500,88,Low
+150,800,75,Medium
