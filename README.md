@@ -1,16 +1,16 @@
-# dustvigil
+# 🌍 DustVigil – Smart Air Pollution Control System
 
-A new Flutter project.
+**DustVigil** is an AI + IoT project designed to monitor and control dust pollution at construction sites using drones and smart vacuum devices.
 
-## Getting Started
+## 🚀 Tech Stack
+- **Frontend:** Flutter
+- **Backend:** FastAPI (Python)
+- **Database:** PostgreSQL / Firebase
+- **Hardware:** IoT sensors + Drone module
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📂 Project Structure
+**✨ Features**
+- Real-time air quality monitoring
+- Drone control and GPS tracking
+- Battery monitoring
+- Smart vacuum device for dust collection
