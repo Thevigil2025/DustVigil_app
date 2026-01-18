@@ -1,20 +1,42 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from pathlib import Path
 import joblib
 import os
 
 router = APIRouter()
 
-MODEL_PATH = "models/dust_model.pkl"
+# Resolve model path relative to this file
+BASE_DIR = Path(__file__).resolve().parent.parent  # points to backend/
+MODEL_PATH = BASE_DIR / "models" / "dust_model.pkl"
 
-# Load model only once when API starts
-if os.path.exists(MODEL_PATH):
-    model = joblib.load(MODEL_PATH)
+# Load model once at import/startup
+_model = None
+if MODEL_PATH.exists():
+    try:
+        _model = joblib.load(MODEL_PATH)
+    except Exception as e:
+        # keep service up even if model fails to load
+        _model = None
+        print(f"Failed to load model: {e}")
 else:
-    model = None
+    print(f"Model not found at {MODEL_PATH}")
 
-@router.post("/ai/predict-dust-risk")
-def predict_dust_risk(pm25: float, co2: float, battery: float):
-    if not model:
-        return {"error": "Model not trained yet"}
-    prediction = model.predict([[pm25, co2, battery]])[0]
-    return {"risk_level": prediction}
+class PredictRequest(BaseModel):
+    pm25: float
+    co2: float
+    battery: float
+
+class PredictResponse(BaseModel):
+    risk_level: str
+
+@router.post("/predict-dust-risk", response_model=PredictResponse)
+def predict_dust_risk(payload: PredictRequest):
+    global _model
+    if _model is None:
+        raise HTTPException(status_code=503, detail="Model not available. Train model or check path.")
+    try:
+        pred = _model.predict([[payload.pm25, payload.co2, payload.battery]])[0]
+        return {"risk_level": str(pred)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Prediction error: {e}")
